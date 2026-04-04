@@ -1,3 +1,7 @@
+---
+tags:
+- openenv
+---
 # DocketAI 🏛️
 ### Intelligent Court Case Prioritization Through Adaptive Sequencing
 
