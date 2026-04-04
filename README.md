@@ -1,4 +1,14 @@
 ---
+title: DocketAI
+emoji: ⚖️
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+tags:
+- openenv
+---
+---
 tags:
 - openenv
 ---
