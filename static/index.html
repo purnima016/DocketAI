@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocketAI - Case Management Interface</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #eaedf1; --bg-panel: #ffffff; --bg-header: #1c2434; --bg-subheader: #f8fafc;
+            --text-main: #1f2937; --text-muted: #6b7280; --text-inverse: #f9fafb;
+            --border-color: #d1d5db; --border-light: #e5e7eb;
+            --accent-navy: #0f172a; --accent-blue: #2563eb;
+            --status-critical: #991b1b; --rgb-critical: 153, 27, 27;
+            --status-high: #b45309; --rgb-high: 180, 83, 9;
+            --status-routine: #166534; --rgb-routine: 22, 101, 52;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --font-serif: 'Merriweather', serif;
+            --radius-sm: 2px; --radius-md: 4px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-sans); background: var(--bg-page); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; font-size: 13px; overflow: hidden; animation: fadeIn 0.8s ease-out forwards; }
+        h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--accent-navy); padding-bottom: 6px; font-weight: 600; color: var(--accent-navy); margin-bottom: 12px; }
+        .app-header { background: var(--bg-header); color: var(--text-inverse); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; height: 48px; flex-shrink: 0; border-bottom: 2px solid #000; }
+        .brand-sect { display: flex; align-items: center; gap: 16px; }
+        .logo { font-family: var(--font-serif); font-size: 18px; letter-spacing: 1px; }
+        .header-nav { display: flex; gap: 20px; font-size: 13px; font-weight: 500; }
+        .header-nav a { color: #9ca3af; text-decoration: none; cursor: pointer; padding: 14px 0; border-bottom: 2px solid transparent; transition: color 0.3s, border-color 0.3s; }
+        .header-nav a:hover { color: #fff; }
+        .header-nav a.active { color: #fff; border-bottom-color: var(--accent-blue); }
+        .system-time { font-family: var(--font-mono); font-size: 12px; color: #9ca3af; }
+        .sub-header { background: #fff; border-bottom: 1px solid var(--border-color); padding: 8px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+        .kpi-row { display: flex; gap: 32px; }
+        .kpi-item { display: flex; flex-direction: column; }
+        .kpi-lbl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .kpi-val { font-size: 18px; font-weight: 600; font-family: var(--font-serif); background: linear-gradient(90deg, var(--accent-navy) 0%, rgba(37,99,235,0.8) 50%, var(--accent-navy) 100%); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: textShimmer 3s linear infinite; }
+        .control-tabs { display: flex; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: var(--bg-subheader); }
+        .tab-btn { background: none; border: none; padding: 6px 16px; font-size: 12px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-right: 1px solid var(--border-color); transition: all 0.2s ease; }
+        .tab-btn:last-child { border-right: none; }
+        .tab-btn:hover { background: #f1f5f9; color: var(--text-main); }
+        .tab-btn.active { background: #fff; color: var(--accent-navy); font-weight: 600; box-shadow: inset 0 2px 0 var(--accent-blue); }
+        .main-container { display: grid; grid-template-columns: 40% 35% 25%; flex-grow: 1; overflow: hidden; }
+        .col-panel { background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 16px; overflow-y: auto; position: relative; }
+        .col-panel:last-child { border-right: none; }
+        .col-panel::-webkit-scrollbar { width: 5px; }
+        .col-panel::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        .data-grid { width: 100%; border-collapse: collapse; text-align: left; margin-bottom: 16px; }
+        .data-grid th { font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid var(--border-color); padding: 8px 4px; font-weight: 600; }
+        .data-grid td { padding: 10px 4px; border-bottom: 1px solid var(--border-light); vertical-align: middle; transition: transform 0.2s ease, background-color 0.2s; }
+        .data-grid tbody tr { opacity: 0; animation: slideUpFade 0.4s ease-out forwards; }
+        .data-grid tr:nth-child(1) { animation-delay: 0.05s; }
+        .data-grid tr:nth-child(2) { animation-delay: 0.1s; }
+        .data-grid tr:nth-child(3) { animation-delay: 0.15s; }
+        .data-grid tr:nth-child(4) { animation-delay: 0.2s; }
+        .data-grid tr:nth-child(5) { animation-delay: 0.25s; }
+        .data-grid tr:nth-child(6) { animation-delay: 0.3s; }
+        .data-grid tr:nth-child(7) { animation-delay: 0.35s; }
+        .data-grid tr:nth-child(8) { animation-delay: 0.4s; }
+        .data-grid tr:nth-child(9) { animation-delay: 0.45s; }
+        .data-grid tr:nth-child(10) { animation-delay: 0.5s; }
+        .data-grid tr:hover td { background-color: #f0fdf4; }
+        .data-grid tr:hover td:first-child { transform: translateX(4px); }
+        .c-id { font-family: var(--font-mono); font-weight: 600; color: var(--accent-blue); }
+        .c-type { font-weight: 500; }
+        .c-metric { font-family: var(--font-mono); font-size: 12px; }
+        .indicator { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+        .ind-crit { background: var(--status-critical); animation: softPulse 2s infinite; --pulse-color: var(--rgb-critical); }
+        .ind-high { background: var(--status-high); animation: softPulse 3s infinite; --pulse-color: var(--rgb-high); }
+        .ind-rout { background: var(--status-routine); animation: softPulse 4s infinite; --pulse-color: var(--rgb-routine); }
+        .btn-sm { background: #fff; border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 10px; font-size: 11px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; }
+        .btn-sm:hover { background: var(--bg-subheader); transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .btn-sm.primary { background: var(--accent-navy); color: #fff; border-color: var(--accent-navy); }
+        .btn-sm.primary:hover { background: #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .btn-sm.danger { border-color: var(--status-critical); color: var(--status-critical); }
+        .btn-sm.danger:hover { background: #fef2f2; }
+        .btn-sm.active-auto { background: #166534; color: #fff; border-color: #166534; }
+        .analytics-block { margin-bottom: 20px; opacity: 0; animation: fadeIn 0.6s 0.3s ease-out forwards; }
+        .analytics-block h3 { font-size: 13px; color: var(--text-muted); border-bottom: 1px solid var(--border-light); padding-bottom: 4px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .bar-chart-row { display: flex; align-items: center; margin-bottom: 12px; gap: 12px; }
+        .bar-label { width: 130px; font-size: 12px; font-weight: 500; }
+        .bar-track { flex-grow: 1; height: 8px; background: var(--bg-subheader); border: 1px solid var(--border-color); overflow: hidden; position: relative; }
+        .bar-fill { height: 100%; transform-origin: left; animation: scaleXLine 1s cubic-bezier(0.1,0.7,0.1,1) forwards; position: relative; overflow: hidden; transition: width 0.5s ease; }
+        .bar-fill::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: sweep 2s infinite 1s; }
+        .score-box { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); padding: 16px; background: #fafafa; border-left: 3px solid var(--accent-blue); margin-bottom: 16px; transition: all 0.3s ease; }
+        .score-box:hover { background: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.1); border-left-width: 6px; }
+        .score-desc { font-weight: 500; }
+        .score-num { font-size: 28px; font-family: var(--font-mono); font-weight: 600; color: var(--accent-navy); transition: all 0.3s; }
+        .param-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+        .param-table td { padding: 6px 0; border-bottom: 1px dotted var(--border-light); transition: background 0.2s; }
+        .param-table tr:hover td { background: #f8fafc; }
+        .param-table td:first-child { color: var(--text-muted); width: 60%; }
+        .param-table td:last-child { text-align: right; font-weight: 500; }
+        .log-container { border: 1px solid var(--border-color); background: #fff; height: 220px; overflow-y: auto; font-family: var(--font-mono); font-size: 11px; margin-bottom: 16px; position: relative; }
+        .log-container::-webkit-scrollbar { width: 4px; }
+        .log-container::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        .log-entry { display: flex; border-bottom: 1px solid #f3f4f6; padding: 6px 8px; animation: logSlideUp 0.3s ease-out forwards; }
+        .log-entry:last-child { border-bottom: none; }
+        .log-ts { color: var(--text-muted); padding-right: 12px; width: 65px; flex-shrink: 0; }
+        .log-det { color: var(--text-main); }
+        .log-warn { color: var(--status-high); }
+        .log-err { color: var(--status-critical); font-weight: 500; }
+        .log-ok { color: var(--status-routine); font-weight: 500; }
+        .diagnostics { background: var(--accent-navy); color: #e5e7eb; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: var(--radius-sm); line-height: 1.6; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); height: 160px; overflow-y: auto; }
+        .diagnostics::-webkit-scrollbar { width: 3px; }
+        .diagnostics::-webkit-scrollbar-thumb { background: #334155; }
+        .d-method { color: #f59e0b; font-weight: 600; }
+        .d-path { color: #38bdf8; }
+        .d-response { color: #a3e635; }
+        .d-muted { color: #64748b; }
+        .cursor { display: inline-block; width: 6px; height: 12px; background: #fff; vertical-align: middle; animation: blink 1s step-end infinite; }
+        .app-footer { height: 28px; background: var(--bg-subheader); border-top: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; font-size: 11px; color: var(--text-muted); flex-shrink: 0; }
+        .status-badge { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+        .empty-row td { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px 0; }
+        .toast { position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent-navy); color: #fff; border: 1px solid #334155; border-radius: 4px; padding: 10px 20px; font-size: 12px; z-index: 999; transition: transform 0.25s ease; white-space: nowrap; font-family: var(--font-mono); }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+        .action-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes logSlideUp { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleXLine { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+        @keyframes sweep { 0% { left: -100%; } 100% { left: 200%; } }
+        @keyframes softPulse { 0% { box-shadow: 0 0 0 0 rgba(var(--pulse-color), 0.4); } 70% { box-shadow: 0 0 0 4px rgba(var(--pulse-color), 0); } 100% { box-shadow: 0 0 0 0 rgba(var(--pulse-color), 0); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @keyframes textShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-subheader); border-left: 1px solid var(--border-color); }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<header class="app-header">
+    <div class="brand-sect">
+        <div class="logo">DOCKET.AI</div>
+        <div style="width:1px;height:16px;background:#4b5563"></div>
+        <div style="font-size:12px;letter-spacing:0.5px;color:#9ca3af;text-transform:uppercase">Intelligent Adjudication System</div>
+    </div>
+    <nav class="header-nav">
+        <a class="active">Docket Control</a>
+        <a>Caseload Analysis</a>
+        <a>Model Governance</a>
+        <a>Audit Trail</a>
+    </nav>
+    <div class="system-time" id="clock">UTC -- <span class="indicator ind-rout" style="margin-left:8px"></span></div>
+</header>
+
+<div class="sub-header">
+    <div class="kpi-row">
+        <div class="kpi-item"><span class="kpi-lbl">Pending Queue</span><span class="kpi-val" id="kpi-pending">—</span></div>
+        <div class="kpi-item"><span class="kpi-lbl">Cases Resolved</span><span class="kpi-val" id="kpi-resolved">0</span></div>
+        <div class="kpi-item"><span class="kpi-lbl">Model Score</span><span class="kpi-val" id="kpi-score">0.000</span></div>
+        <div class="kpi-item"><span class="kpi-lbl">Total Reward</span><span class="kpi-val" id="kpi-reward">0.00</span></div>
+        <div class="kpi-item"><span class="kpi-lbl">Fairness Index</span><span class="kpi-val" id="kpi-fairness">—</span></div>
+    </div>
+    <div class="control-tabs">
+        <button class="tab-btn active" onclick="setTask('easy',this)">Easy Task</button>
+        <button class="tab-btn" onclick="setTask('medium',this)">Medium Task</button>
+        <button class="tab-btn" onclick="setTask('hard',this)">Hard Task</button>
+    </div>
+</div>
+
+<div class="main-container">
+    <!-- COL 1: DOCKET QUEUE -->
+    <div class="col-panel">
+        <h2>Current Adjudication Queue</h2>
+        <div class="action-row">
+            <button class="btn-sm primary" onclick="resetEnv()">Initialize Session</button>
+            <button class="btn-sm primary" onclick="stepBest()">▶ Next Optimal</button>
+            <button class="btn-sm" id="auto-btn" onclick="toggleAuto()">⚡ Auto Play</button>
+        </div>
+        <table class="data-grid">
+            <thead>
+                <tr>
+                    <th style="width:22%">Docket ID</th>
+                    <th style="width:28%">Classification</th>
+                    <th style="width:13%">Pending</th>
+                    <th style="width:13%">Severity</th>
+                    <th style="width:12%">Urgency</th>
+                    <th style="width:12%">Action</th>
+                </tr>
+            </thead>
+            <tbody id="case-tbody">
+                <tr class="empty-row"><td colspan="6">Click "Initialize Session" to load cases</td></tr>
+            </tbody>
+        </table>
+
+        <h2 style="margin-top:8px">Resolved Docket</h2>
+        <table class="data-grid">
+            <thead>
+                <tr>
+                    <th style="width:25%">Docket ID</th>
+                    <th style="width:30%">Type</th>
+                    <th style="width:20%">Days Pending</th>
+                    <th style="width:25%">Reward Earned</th>
+                </tr>
+            </thead>
+            <tbody id="resolved-tbody">
+                <tr class="empty-row"><td colspan="4">No cases resolved yet</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- COL 2: AI PERFORMANCE -->
+    <div class="col-panel">
+        <h2>Model Performance & Logistics</h2>
+
+        <div class="score-box">
+            <div>
+                <div class="score-desc">Primary Grader Evaluation</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="score-status">Awaiting session initialization</div>
+            </div>
+            <div class="score-num" id="score-main">0.000</div>
+        </div>
+
+        <div class="analytics-block">
+            <h3>Comparative Baselines</h3>
+            <div class="bar-chart-row">
+                <div class="bar-label">vs Random Agent</div>
+                <div class="bar-track"><div class="bar-fill" id="bar-random" style="width:0%;background:var(--status-routine)"></div></div>
+                <div class="c-metric" id="pct-random">+0%</div>
+            </div>
+            <div class="bar-chart-row">
+                <div class="bar-label">vs FIFO Baseline</div>
+                <div class="bar-track"><div class="bar-fill" id="bar-fifo" style="width:0%;background:var(--accent-blue)"></div></div>
+                <div class="c-metric" id="pct-fifo">+0%</div>
+            </div>
+            <div class="bar-chart-row">
+                <div class="bar-label">Fairness Standard</div>
+                <div class="bar-track"><div class="bar-fill" id="bar-fair" style="width:0%;background:var(--status-high)"></div></div>
+                <div class="c-metric" id="pct-fair">—</div>
+            </div>
+        </div>
+
+        <div class="analytics-block">
+            <h3>Session Metrics</h3>
+            <table class="param-table">
+                <tr><td>Current Task</td><td id="p-task">Easy</td></tr>
+                <tr><td>Day / Step</td><td id="p-day">0</td></tr>
+                <tr><td>Cases Handled</td><td id="p-handled">0</td></tr>
+                <tr><td>Avg Urgency Score</td><td id="p-urgency">—</td></tr>
+                <tr><td>Case Types Covered</td><td id="p-types">—</td></tr>
+                <tr><td>Pass Threshold</td><td id="p-thresh">≥ 0.30</td></tr>
+                <tr><td>System Assessment</td><td id="p-assess" style="color:var(--text-muted)">PENDING</td></tr>
+            </table>
+        </div>
+
+        <div class="analytics-block" style="margin-top:auto;margin-bottom:0">
+            <h3>Environment Parameters</h3>
+            <table class="param-table">
+                <tr><td>Environment</td><td>DocketAI v1.0.0</td></tr>
+                <tr><td>Max Steps (Easy)</td><td>10</td></tr>
+                <tr><td>Max Steps (Medium)</td><td>20</td></tr>
+                <tr><td>Max Steps (Hard)</td><td>30</td></tr>
+                <tr><td>Reward Range</td><td>[0.0, 1.0]</td></tr>
+                <tr><td>Grader Status</td><td style="color:var(--status-routine)">ACTIVE</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- COL 3: LOGS & DIAGNOSTICS -->
+    <div class="col-panel">
+        <h2>Audit Trail & Diagnostics</h2>
+
+        <div class="analytics-block" style="margin-bottom:16px">
+            <h3>Event Log</h3>
+            <div class="log-container" id="log-container">
+                <div class="log-entry"><div class="log-ts">--:--:--</div><div class="log-det">System initialized. Awaiting session.</div></div>
+            </div>
+        </div>
+
+        <div class="analytics-block" style="margin-bottom:0;flex-grow:1">
+            <h3>Terminal Output</h3>
+            <div class="diagnostics" id="terminal">
+<span class="d-muted"># DocketAI OpenEnv v1.0.0</span>
+<span class="d-muted"># Endpoints: /reset /step /state /health</span>
+<span class="d-muted"># Status: Awaiting initialization...</span>
+<span style="color:#38bdf8">> SYSTEM LISTENING<span class="cursor"></span></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="app-footer">
+    <div class="status-badge">
+        <span class="indicator ind-rout"></span>
+        <span id="footer-status" style="color:var(--status-routine)">System Operational</span>
+    </div>
+    <div id="footer-session">Session: Ready</div>
+    <div>Powered by DocketAI Enterprise · OpenEnv Hackathon 2025</div>
+</footer>
+
+<script>
+const TC = {
+    medical:  { ind: 'ind-crit', color: '#991b1b', label: 'Medical / Critical' },
+    violence: { ind: 'ind-crit', color: '#991b1b', label: 'Violence / Urgent' },
+    bail:     { ind: 'ind-high', color: '#b45309', label: 'Bail / High Priority' },
+    criminal: { ind: 'ind-high', color: '#b45309', label: 'Criminal / Standard' },
+    civil:    { ind: 'ind-rout', color: '#166534', label: 'Civil / Routine' }
+};
+const THRESH = { easy: 0.30, medium: 0.40, hard: 0.50 };
+let S = { cases: [], handled: [], day: 0, rewards: [], task: 'easy', auto: false, totalReward: 0 };
+
+// Clock
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').innerHTML = `UTC ${now.toISOString().slice(0,19).replace('T',' ')} <span class="indicator ind-rout" style="margin-left:8px"></span>`;
+}
+setInterval(updateClock, 1000); updateClock();
+
+function toast(msg, d=2500) {
+    const el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), d);
+}
+
+function now() { return new Date().toTimeString().slice(0,8); }
+
+function addLog(msg, cls='log-det') {
+    const c = document.getElementById('log-container');
+    const e = document.createElement('div');
+    e.className = 'log-entry';
+    e.innerHTML = `<div class="log-ts">${now()}</div><div class="${cls}">${msg}</div>`;
+    c.insertBefore(e, c.firstChild);
+    if (c.children.length > 30) c.removeChild(c.lastChild);
+}
+
+function addTerminal(lines) {
+    const t = document.getElementById('terminal');
+    lines.forEach(l => {
+        const d = document.createElement('div');
+        d.innerHTML = l;
+        t.insertBefore(d, t.lastChild);
+    });
+    t.scrollTop = t.scrollHeight;
+    while (t.children.length > 25) t.removeChild(t.firstChild);
+}
+
+function setTask(task, btn) {
+    S.task = task;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('p-task').textContent = task.charAt(0).toUpperCase() + task.slice(1);
+    document.getElementById('p-thresh').textContent = '≥ ' + THRESH[task].toFixed(2);
+    toast('Task set to: ' + task.toUpperCase());
+}
+
+function getIndicator(type) { return (TC[type] || TC.civil).ind; }
+function getColor(type) { return (TC[type] || TC.civil).color; }
+function getLabel(type) { return (TC[type] || TC.civil).label; }
+
+function updateKPIs() {
+    document.getElementById('kpi-pending').textContent = S.cases.length || '—';
+    document.getElementById('kpi-resolved').textContent = S.handled.length;
+    document.getElementById('kpi-reward').textContent = S.totalReward.toFixed(2);
+    document.getElementById('p-day').textContent = S.day;
+    document.getElementById('p-handled').textContent = S.handled.length;
+    document.getElementById('footer-session').textContent = `Session: Day ${S.day} · ${S.task.toUpperCase()}`;
+
+    if (S.handled.length > 0) {
+        const avgU = S.handled.reduce((a,c) => a+c.urgency_score, 0) / S.handled.length;
+        document.getElementById('p-urgency').textContent = avgU.toFixed(2);
+        const types = new Set(S.handled.map(c => c.case_type));
+        document.getElementById('p-types').textContent = types.size + '/5';
+        const fairness = (types.size / 5).toFixed(2);
+        document.getElementById('kpi-fairness').textContent = fairness;
+        document.getElementById('bar-fair').style.width = (types.size / 5 * 100) + '%';
+        document.getElementById('pct-fair').textContent = fairness;
+    }
+}
+
+function updateScore() {
+    if (!S.rewards.length) return;
+    const avg = S.rewards.reduce((a,b)=>a+b,0) / S.rewards.length;
+    document.getElementById('kpi-score').textContent = avg.toFixed(3);
+    document.getElementById('score-main').textContent = avg.toFixed(3);
+    const threshold = THRESH[S.task];
+    const passing = avg >= threshold;
+    const assessEl = document.getElementById('p-assess');
+    const statusEl = document.getElementById('score-status');
+    if (passing) {
+        assessEl.textContent = 'PASSING'; assessEl.style.color = '#166534';
+        statusEl.textContent = `Score ${avg.toFixed(3)} ≥ threshold ${threshold.toFixed(2)} — PASSING`;
+        statusEl.style.color = '#166534';
+    } else {
+        assessEl.textContent = 'BELOW THRESHOLD'; assessEl.style.color = '#991b1b';
+        statusEl.textContent = `Score ${avg.toFixed(3)} < threshold ${threshold.toFixed(2)} — NEEDS IMPROVEMENT`;
+        statusEl.style.color = '#991b1b';
+    }
+    // Baseline comparison (FIFO ~0.45, Random ~0.35)
+    const vsRandom = Math.max(0, ((avg - 0.35) / 0.35) * 100);
+    const vsFifo = Math.max(0, ((avg - 0.45) / 0.45) * 100);
+    document.getElementById('bar-random').style.width = Math.min(avg / 0.9 * 100, 100) + '%';
+    document.getElementById('bar-fifo').style.width = Math.min(avg / 0.75 * 100, 100) + '%';
+    document.getElementById('pct-random').textContent = '+' + vsRandom.toFixed(0) + '%';
+    document.getElementById('pct-fifo').textContent = '+' + vsFifo.toFixed(0) + '%';
+}
+
+function renderCases() {
+    const tbody = document.getElementById('case-tbody');
+    if (!S.cases.length) {
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">All cases resolved</td></tr>';
+        return;
+    }
+    const sorted = [...S.cases].sort((a,b) => b.urgency_score - a.urgency_score);
+    tbody.innerHTML = '';
+    sorted.forEach((c, di) => {
+        const origIdx = S.cases.findIndex(x => x.case_id === c.case_id);
+        const color = getColor(c.case_type);
+        const ind = getIndicator(c.case_type);
+        const label = getLabel(c.case_type);
+        const tr = document.createElement('tr');
+        tr.style.animationDelay = (di * 0.04) + 's';
+        tr.innerHTML = `
+            <td><span class="c-id">CASE-${String(c.case_id).padStart(4,'0')}</span></td>
+            <td><span class="indicator ${ind}"></span><span class="c-type">${label}</span></td>
+            <td><span class="c-metric">${c.age_days} d</span></td>
+            <td><span class="c-metric" style="color:${color};font-weight:600">${c.severity.toFixed(2)}</span></td>
+            <td><span class="c-metric" style="color:${color}">${c.urgency_score.toFixed(2)}</span></td>
+            <td><button class="btn-sm primary" style="background:${color};border-color:${color}" onclick="stepCase(${origIdx})">Review</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+    updateKPIs();
+}
+
+function addResolved(c, reward) {
+    const tbody = document.getElementById('resolved-tbody');
+    if (tbody.querySelector('.empty-row')) tbody.innerHTML = '';
+    const color = getColor(c.case_type);
+    const tr = document.createElement('tr');
+    tr.style.animationDelay = '0s';
+    tr.innerHTML = `
+        <td><span class="c-id">CASE-${String(c.case_id).padStart(4,'0')}</span></td>
+        <td><span class="indicator ${getIndicator(c.case_type)}"></span>${c.case_type}</td>
+        <td><span class="c-metric">${c.age_days} d</span></td>
+        <td><span class="c-metric" style="color:#166534;font-weight:600">+${reward.toFixed(2)}</span></td>
+    `;
+    tbody.insertBefore(tr, tbody.firstChild);
+}
+
+async function resetEnv() {
+    S.auto = false;
+    document.getElementById('auto-btn').textContent = '⚡ Auto Play';
+    document.getElementById('auto-btn').className = 'btn-sm';
+    try {
+        addTerminal([`<span class="d-muted">> </span><span class="d-method">POST</span> <span class="d-path">/reset</span>`]);
+        const res = await fetch('/reset', { method: 'POST' });
+        const data = await res.json();
+        S.cases = data.cases; S.handled = []; S.day = data.day;
+        S.rewards = []; S.totalReward = 0;
+        document.getElementById('resolved-tbody').innerHTML = '<tr class="empty-row"><td colspan="4">No cases resolved yet</td></tr>';
+        document.getElementById('score-main').textContent = '0.000';
+        document.getElementById('kpi-score').textContent = '0.000';
+        document.getElementById('kpi-reward').textContent = '0.00';
+        document.getElementById('p-assess').textContent = 'PENDING'; document.getElementById('p-assess').style.color = 'var(--text-muted)';
+        document.getElementById('score-status').textContent = 'Session initialized — agent ready';
+        document.getElementById('score-status').style.color = 'var(--text-muted)';
+        renderCases(); updateKPIs();
+        addTerminal([`<span class="d-response">{"status":"ok","cases":${data.cases.length},"day":${data.day}}</span>`]);
+        addLog(`[START] Session initialized — ${data.cases.length} cases loaded`, 'log-ok');
+        toast('Session initialized — ' + data.cases.length + ' cases loaded');
+    } catch(e) {
+        addLog('[ERROR] Cannot connect to server', 'log-err');
+        toast('Connection error');
+    }
+}
+
+async function stepCase(idx) {
+    if (!S.cases.length) { toast('No cases to handle'); return; }
+    try {
+        addTerminal([`<span class="d-muted">> </span><span class="d-method">POST</span> <span class="d-path">/step</span> {"case_index":${idx}}`]);
+        const res = await fetch('/step', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({case_index: idx}) });
+        const data = await res.json();
+        const handled = S.cases[idx];
+        S.cases = data.observation.cases;
+        S.day = data.observation.day;
+        S.rewards.push(data.reward);
+        S.totalReward += data.reward;
+        if (handled) { S.handled.unshift(handled); addResolved(handled, data.reward); }
+        updateScore(); renderCases(); updateKPIs();
+        addTerminal([`<span class="d-response">{"reward":${data.reward.toFixed(2)},"done":${data.done},"day":${data.observation.day}}</span>`]);
+        addLog(`Action Executed: ${handled?.case_type?.toUpperCase()} CASE-${String(handled?.case_id).padStart(4,'0')} dispatched (Reward: +${data.reward.toFixed(2)})`, data.reward > 0.6 ? 'log-ok' : 'log-det');
+        if (data.done) {
+            const avg = S.rewards.reduce((a,b)=>a+b,0) / S.rewards.length;
+            addLog(`[END] Session complete — Final Score: ${avg.toFixed(3)}`, 'log-ok');
+            toast('Session complete! Final score: ' + (avg*100).toFixed(1) + '%', 3500);
+            S.auto = false;
+            document.getElementById('auto-btn').textContent = '⚡ Auto Play';
+            document.getElementById('auto-btn').className = 'btn-sm';
+        }
+    } catch(e) { addLog('[ERROR] Step failed', 'log-err'); }
+}
+
+function stepBest() {
+    if (!S.cases.length) { toast('Start a session first'); return; }
+    const best = S.cases.reduce((bi,c,i) => c.urgency_score > S.cases[bi].urgency_score ? i : bi, 0);
+    stepCase(best);
+}
+
+function toggleAuto() {
+    S.auto = !S.auto;
+    const btn = document.getElementById('auto-btn');
+    if (S.auto) {
+        btn.textContent = '⏹ Suspend Auto';
+        btn.className = 'btn-sm active-auto';
+        toast('Auto-prioritizing cases...');
+        runAuto();
+    } else {
+        btn.textContent = '⚡ Auto Play';
+        btn.className = 'btn-sm';
+        toast('Auto play suspended');
+    }
+}
+
+async function runAuto() {
+    while (S.auto && S.cases.length) {
+        await new Promise(r => setTimeout(r, 900));
+        if (!S.auto) break;
+        const best = S.cases.reduce((bi,c,i) => c.urgency_score > S.cases[bi].urgency_score ? i : bi, 0);
+        await stepCase(best);
+    }
+    if (!S.cases.length) {
+        S.auto = false;
+        document.getElementById('auto-btn').textContent = '⚡ Auto Play';
+        document.getElementById('auto-btn').className = 'btn-sm';
+    }
+}
+</script>
+</body>
+</html>

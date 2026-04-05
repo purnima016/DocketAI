@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
-from environment import DocketAIEnv, Action, Observation
+from environment import DocketAIEnv, Action
+import os
 
 app = FastAPI(
     title="DocketAI",
@@ -8,38 +11,29 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Global environment instance
+# Serve static files
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+
 env = DocketAIEnv()
-
-
-# ─── Request Models ────────────────────────────────────────
 
 class ActionRequest(BaseModel):
     case_index: int
 
-
-# ─── Routes ────────────────────────────────────────────────
-
 @app.get("/")
 def root():
-    return {
-        "name": "DocketAI",
-        "version": "1.0.0",
-        "description": "Court Case Prioritization Environment",
-        "endpoints": ["/reset", "/step", "/state", "/health"]
-    }
-
+    if os.path.exists("static/index.html"):
+        return FileResponse("static/index.html")
+    return {"name": "DocketAI", "version": "1.0.0"}
 
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-
 @app.post("/reset")
 def reset():
     observation = env.reset()
     return observation.dict()
-
 
 @app.post("/step")
 def step(action: ActionRequest):
@@ -50,7 +44,6 @@ def step(action: ActionRequest):
         "done": result.done,
         "info": result.info
     }
-
 
 @app.get("/state")
 def state():
