@@ -11,10 +11,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Serve static files
-if os.path.exists("static"):
-    app.mount("/static", StaticFiles(directory="static"), name="static")
-
 env = DocketAIEnv()
 
 class ActionRequest(BaseModel):
@@ -23,7 +19,7 @@ class ActionRequest(BaseModel):
 @app.get("/")
 def root():
     if os.path.exists("static/index.html"):
-        return FileResponse("static/index.html")
+        return FileResponse("static/index.html", media_type="text/html")
     return {"name": "DocketAI", "version": "1.0.0"}
 
 @app.get("/health")
