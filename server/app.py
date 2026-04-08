@@ -21,6 +21,12 @@ class ActionRequest(BaseModel):
 
 @app.get("/")
 def root():
+    static_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "static", "index.html"
+    )
+    if os.path.exists(static_path):
+        return FileResponse(static_path, media_type="text/html")
     return {"name": "DocketAI", "version": "1.0.0"}
 
 @app.get("/health")
