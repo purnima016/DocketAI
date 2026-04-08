@@ -1,3 +1,11 @@
+---
+title: DocketAI
+emoji: ⚖️
+colorFrom: blue
+colorTo: red
+sdk: docker
+pinned: false
+---
 # DocketAI 🏛️
 ### Intelligent Court Case Prioritization Through Adaptive Sequencing
 
