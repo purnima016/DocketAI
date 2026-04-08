@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-  {name = "Purnima", email = "purnima@example.com"}
+  {name = "Purnima"}
 ]
 dependencies = [
     "fastapi",
@@ -18,9 +18,9 @@ dependencies = [
     "pydantic",
     "openai",
     "openenv-core",
+    "aiofiles",
+    "python-multipart",
 ]
 
-[project.urls]
-Homepage = "https://huggingface.co/spaces/Purnima1612/docketai"
-[project.scripts]
-server = "server:app"
+[tool.openenv]
+entry_point = "app:main"
