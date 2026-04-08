@@ -22,9 +22,6 @@ dependencies = [
     "python-multipart",
 ]
 
-[tool.openenv]
-entry_point = "app:main"
-
 [project.scripts]
 server = "server.app:main"
 
