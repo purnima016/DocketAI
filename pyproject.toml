@@ -24,3 +24,9 @@ dependencies = [
 
 [tool.openenv]
 entry_point = "app:main"
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.openenv]
+entry_point = "server.app:main"
