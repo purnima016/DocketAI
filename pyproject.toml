@@ -22,3 +22,5 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://huggingface.co/spaces/Purnima1612/docketai"
+[project.scripts]
+server = "server:app"
