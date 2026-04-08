@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from environment import DocketAIEnv, Action
+from ..environment import DocketAIEnv, Action
 import uvicorn
 
 app = FastAPI()
