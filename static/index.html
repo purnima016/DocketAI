@@ -40,6 +40,9 @@
         .tab-btn:last-child { border-right: none; }
         .tab-btn:hover { background: #f1f5f9; color: var(--text-main); }
         .tab-btn.active { background: #fff; color: var(--accent-navy); font-weight: 600; box-shadow: inset 0 2px 0 var(--accent-blue); }
+        /* NAV VIEWS */
+        .nav-view { display: none; flex-direction: column; flex-grow: 1; overflow: hidden; }
+        .nav-view.active-view { display: flex; }
         .main-container { display: grid; grid-template-columns: 40% 35% 25%; flex-grow: 1; overflow: hidden; }
         .col-panel { background: #fff; border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 16px; overflow-y: auto; position: relative; }
         .col-panel:last-child { border-right: none; }
@@ -49,16 +52,9 @@
         .data-grid th { font-size: 11px; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid var(--border-color); padding: 8px 4px; font-weight: 600; }
         .data-grid td { padding: 10px 4px; border-bottom: 1px solid var(--border-light); vertical-align: middle; transition: transform 0.2s ease, background-color 0.2s; }
         .data-grid tbody tr { opacity: 0; animation: slideUpFade 0.4s ease-out forwards; }
-        .data-grid tr:nth-child(1) { animation-delay: 0.05s; }
-        .data-grid tr:nth-child(2) { animation-delay: 0.1s; }
-        .data-grid tr:nth-child(3) { animation-delay: 0.15s; }
-        .data-grid tr:nth-child(4) { animation-delay: 0.2s; }
-        .data-grid tr:nth-child(5) { animation-delay: 0.25s; }
-        .data-grid tr:nth-child(6) { animation-delay: 0.3s; }
-        .data-grid tr:nth-child(7) { animation-delay: 0.35s; }
-        .data-grid tr:nth-child(8) { animation-delay: 0.4s; }
-        .data-grid tr:nth-child(9) { animation-delay: 0.45s; }
-        .data-grid tr:nth-child(10) { animation-delay: 0.5s; }
+        .data-grid tr:nth-child(1) { animation-delay: 0.05s; } .data-grid tr:nth-child(2) { animation-delay: 0.1s; }
+        .data-grid tr:nth-child(3) { animation-delay: 0.15s; } .data-grid tr:nth-child(4) { animation-delay: 0.2s; }
+        .data-grid tr:nth-child(5) { animation-delay: 0.25s; } .data-grid tr:nth-child(6) { animation-delay: 0.3s; }
         .data-grid tr:hover td { background-color: #f0fdf4; }
         .data-grid tr:hover td:first-child { transform: translateX(4px); }
         .c-id { font-family: var(--font-mono); font-weight: 600; color: var(--accent-blue); }
@@ -71,39 +67,30 @@
         .btn-sm { background: #fff; border: 1px solid var(--border-color); color: var(--text-main); padding: 4px 10px; font-size: 11px; font-weight: 500; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s ease; }
         .btn-sm:hover { background: var(--bg-subheader); transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .btn-sm.primary { background: var(--accent-navy); color: #fff; border-color: var(--accent-navy); }
-        .btn-sm.primary:hover { background: #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn-sm.danger { border-color: var(--status-critical); color: var(--status-critical); }
-        .btn-sm.danger:hover { background: #fef2f2; }
+        .btn-sm.primary:hover { background: #1e293b; }
         .btn-sm.active-auto { background: #166534; color: #fff; border-color: #166534; }
         .analytics-block { margin-bottom: 20px; opacity: 0; animation: fadeIn 0.6s 0.3s ease-out forwards; }
         .analytics-block h3 { font-size: 13px; color: var(--text-muted); border-bottom: 1px solid var(--border-light); padding-bottom: 4px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
         .bar-chart-row { display: flex; align-items: center; margin-bottom: 12px; gap: 12px; }
         .bar-label { width: 130px; font-size: 12px; font-weight: 500; }
-        .bar-track { flex-grow: 1; height: 8px; background: var(--bg-subheader); border: 1px solid var(--border-color); overflow: hidden; position: relative; }
-        .bar-fill { height: 100%; transform-origin: left; animation: scaleXLine 1s cubic-bezier(0.1,0.7,0.1,1) forwards; position: relative; overflow: hidden; transition: width 0.5s ease; }
+        .bar-track { flex-grow: 1; height: 8px; background: var(--bg-subheader); border: 1px solid var(--border-color); overflow: hidden; }
+        .bar-fill { height: 100%; transition: width 0.5s ease; position: relative; overflow: hidden; }
         .bar-fill::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); animation: sweep 2s infinite 1s; }
         .score-box { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); padding: 16px; background: #fafafa; border-left: 3px solid var(--accent-blue); margin-bottom: 16px; transition: all 0.3s ease; }
-        .score-box:hover { background: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.1); border-left-width: 6px; }
+        .score-box:hover { background: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.1); }
         .score-desc { font-weight: 500; }
-        .score-num { font-size: 28px; font-family: var(--font-mono); font-weight: 600; color: var(--accent-navy); transition: all 0.3s; }
+        .score-num { font-size: 28px; font-family: var(--font-mono); font-weight: 600; color: var(--accent-navy); }
         .param-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
-        .param-table td { padding: 6px 0; border-bottom: 1px dotted var(--border-light); transition: background 0.2s; }
-        .param-table tr:hover td { background: #f8fafc; }
+        .param-table td { padding: 6px 0; border-bottom: 1px dotted var(--border-light); }
         .param-table td:first-child { color: var(--text-muted); width: 60%; }
         .param-table td:last-child { text-align: right; font-weight: 500; }
-        .log-container { border: 1px solid var(--border-color); background: #fff; height: 220px; overflow-y: auto; font-family: var(--font-mono); font-size: 11px; margin-bottom: 16px; position: relative; }
-        .log-container::-webkit-scrollbar { width: 4px; }
-        .log-container::-webkit-scrollbar-thumb { background: #cbd5e1; }
-        .log-entry { display: flex; border-bottom: 1px solid #f3f4f6; padding: 6px 8px; animation: logSlideUp 0.3s ease-out forwards; }
-        .log-entry:last-child { border-bottom: none; }
+        .log-container { border: 1px solid var(--border-color); background: #fff; height: 220px; overflow-y: auto; font-family: var(--font-mono); font-size: 11px; margin-bottom: 16px; }
+        .log-entry { display: flex; border-bottom: 1px solid #f3f4f6; padding: 6px 8px; }
         .log-ts { color: var(--text-muted); padding-right: 12px; width: 65px; flex-shrink: 0; }
         .log-det { color: var(--text-main); }
-        .log-warn { color: var(--status-high); }
         .log-err { color: var(--status-critical); font-weight: 500; }
         .log-ok { color: var(--status-routine); font-weight: 500; }
-        .diagnostics { background: var(--accent-navy); color: #e5e7eb; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: var(--radius-sm); line-height: 1.6; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); height: 160px; overflow-y: auto; }
-        .diagnostics::-webkit-scrollbar { width: 3px; }
-        .diagnostics::-webkit-scrollbar-thumb { background: #334155; }
+        .diagnostics { background: var(--accent-navy); color: #e5e7eb; font-family: var(--font-mono); font-size: 11px; padding: 12px; line-height: 1.6; height: 160px; overflow-y: auto; }
         .d-method { color: #f59e0b; font-weight: 600; }
         .d-path { color: #38bdf8; }
         .d-response { color: #a3e635; }
@@ -115,18 +102,27 @@
         .toast { position: fixed; bottom: 36px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--accent-navy); color: #fff; border: 1px solid #334155; border-radius: 4px; padding: 10px 20px; font-size: 12px; z-index: 999; transition: transform 0.25s ease; white-space: nowrap; font-family: var(--font-mono); }
         .toast.show { transform: translateX(-50%) translateY(0); }
         .action-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        /* Secondary view styles */
+        .view-body { flex-grow: 1; overflow-y: auto; padding: 24px; background: var(--bg-page); }
+        .view-subtitle { color: var(--text-muted); font-size: 12px; margin-bottom: 24px; margin-top: 6px; }
+        .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+        .stat-card { background: #fff; border: 1px solid var(--border-color); padding: 20px; }
+        .stat-card-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .stat-card-val { font-size: 36px; font-family: var(--font-serif); font-weight: 700; margin-top: 8px; }
+        .white-panel { background: #fff; border: 1px solid var(--border-color); padding: 20px; margin-bottom: 16px; }
+        .white-panel h3 { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 14px; border-bottom: 1px solid var(--border-light); padding-bottom: 6px; }
+        .gov-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 12px; }
+        .gov-table td { padding: 9px 8px; border-bottom: 1px solid var(--border-light); }
+        .gov-table tr:hover td { background: #f8fafc; }
+        .gov-table td:first-child { color: var(--text-muted); width: 50%; }
+        .gov-table td:last-child { font-weight: 600; text-align: right; }
+        .audit-log-full { border: 1px solid var(--border-color); background: #fff; height: calc(100vh - 290px); overflow-y: auto; font-family: var(--font-mono); font-size: 11px; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes logSlideUp { 0% { opacity: 0; transform: translateY(-8px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes scaleXLine { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
         @keyframes sweep { 0% { left: -100%; } 100% { left: 200%; } }
         @keyframes softPulse { 0% { box-shadow: 0 0 0 0 rgba(var(--pulse-color), 0.4); } 70% { box-shadow: 0 0 0 4px rgba(var(--pulse-color), 0); } 100% { box-shadow: 0 0 0 0 rgba(var(--pulse-color), 0); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
         @keyframes textShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-subheader); border-left: 1px solid var(--border-color); }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; }
-        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
     </style>
 </head>
 <body>
@@ -139,10 +135,10 @@
         <div style="font-size:12px;letter-spacing:0.5px;color:#9ca3af;text-transform:uppercase">Intelligent Adjudication System</div>
     </div>
     <nav class="header-nav">
-        <a class="active">Docket Control</a>
-        <a>Caseload Analysis</a>
-        <a>Model Governance</a>
-        <a>Audit Trail</a>
+        <a class="active" onclick="showNav('control',this)">Docket Control</a>
+        <a onclick="showNav('caseload',this)">Caseload Analysis</a>
+        <a onclick="showNav('governance',this)">Model Governance</a>
+        <a onclick="showNav('audit',this)">Audit Trail</a>
     </nav>
     <div class="system-time" id="clock">UTC -- <span class="indicator ind-rout" style="margin-left:8px"></span></div>
 </header>
@@ -162,122 +158,194 @@
     </div>
 </div>
 
-<div class="main-container">
-    <!-- COL 1: DOCKET QUEUE -->
-    <div class="col-panel">
-        <h2>Current Adjudication Queue</h2>
-        <div class="action-row">
-            <button class="btn-sm primary" onclick="resetEnv()">Initialize Session</button>
-            <button class="btn-sm primary" onclick="stepBest()">▶ Next Optimal</button>
-            <button class="btn-sm" id="auto-btn" onclick="toggleAuto()">⚡ Auto Play</button>
-        </div>
-        <table class="data-grid">
-            <thead>
-                <tr>
-                    <th style="width:22%">Docket ID</th>
-                    <th style="width:28%">Classification</th>
-                    <th style="width:13%">Pending</th>
-                    <th style="width:13%">Severity</th>
-                    <th style="width:12%">Urgency</th>
-                    <th style="width:12%">Action</th>
-                </tr>
-            </thead>
-            <tbody id="case-tbody">
-                <tr class="empty-row"><td colspan="6">Click "Initialize Session" to load cases</td></tr>
-            </tbody>
-        </table>
-
-        <h2 style="margin-top:8px">Resolved Docket</h2>
-        <table class="data-grid">
-            <thead>
-                <tr>
-                    <th style="width:25%">Docket ID</th>
-                    <th style="width:30%">Type</th>
-                    <th style="width:20%">Days Pending</th>
-                    <th style="width:25%">Reward Earned</th>
-                </tr>
-            </thead>
-            <tbody id="resolved-tbody">
-                <tr class="empty-row"><td colspan="4">No cases resolved yet</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- COL 2: AI PERFORMANCE -->
-    <div class="col-panel">
-        <h2>Model Performance & Logistics</h2>
-
-        <div class="score-box">
-            <div>
-                <div class="score-desc">Primary Grader Evaluation</div>
-                <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="score-status">Awaiting session initialization</div>
+<!-- VIEW 1: DOCKET CONTROL -->
+<div id="view-control" class="nav-view active-view">
+    <div class="main-container">
+        <div class="col-panel">
+            <h2>Current Adjudication Queue</h2>
+            <div class="action-row">
+                <button class="btn-sm primary" onclick="resetEnv()">Initialize Session</button>
+                <button class="btn-sm primary" onclick="stepBest()">▶ Next Optimal</button>
+                <button class="btn-sm" id="auto-btn" onclick="toggleAuto()">⚡ Auto Play</button>
             </div>
-            <div class="score-num" id="score-main">0.000</div>
-        </div>
-
-        <div class="analytics-block">
-            <h3>Comparative Baselines</h3>
-            <div class="bar-chart-row">
-                <div class="bar-label">vs Random Agent</div>
-                <div class="bar-track"><div class="bar-fill" id="bar-random" style="width:0%;background:var(--status-routine)"></div></div>
-                <div class="c-metric" id="pct-random">+0%</div>
-            </div>
-            <div class="bar-chart-row">
-                <div class="bar-label">vs FIFO Baseline</div>
-                <div class="bar-track"><div class="bar-fill" id="bar-fifo" style="width:0%;background:var(--accent-blue)"></div></div>
-                <div class="c-metric" id="pct-fifo">+0%</div>
-            </div>
-            <div class="bar-chart-row">
-                <div class="bar-label">Fairness Standard</div>
-                <div class="bar-track"><div class="bar-fill" id="bar-fair" style="width:0%;background:var(--status-high)"></div></div>
-                <div class="c-metric" id="pct-fair">—</div>
-            </div>
-        </div>
-
-        <div class="analytics-block">
-            <h3>Session Metrics</h3>
-            <table class="param-table">
-                <tr><td>Current Task</td><td id="p-task">Easy</td></tr>
-                <tr><td>Day / Step</td><td id="p-day">0</td></tr>
-                <tr><td>Cases Handled</td><td id="p-handled">0</td></tr>
-                <tr><td>Avg Urgency Score</td><td id="p-urgency">—</td></tr>
-                <tr><td>Case Types Covered</td><td id="p-types">—</td></tr>
-                <tr><td>Pass Threshold</td><td id="p-thresh">≥ 0.30</td></tr>
-                <tr><td>System Assessment</td><td id="p-assess" style="color:var(--text-muted)">PENDING</td></tr>
+            <table class="data-grid">
+                <thead><tr>
+                    <th style="width:22%">Docket ID</th><th style="width:28%">Classification</th>
+                    <th style="width:13%">Pending</th><th style="width:13%">Severity</th>
+                    <th style="width:12%">Urgency</th><th style="width:12%">Action</th>
+                </tr></thead>
+                <tbody id="case-tbody">
+                    <tr class="empty-row"><td colspan="6">Click "Initialize Session" to load cases</td></tr>
+                </tbody>
+            </table>
+            <h2 style="margin-top:8px">Resolved Docket</h2>
+            <table class="data-grid">
+                <thead><tr>
+                    <th style="width:25%">Docket ID</th><th style="width:30%">Type</th>
+                    <th style="width:20%">Days Pending</th><th style="width:25%">Reward Earned</th>
+                </tr></thead>
+                <tbody id="resolved-tbody">
+                    <tr class="empty-row"><td colspan="4">No cases resolved yet</td></tr>
+                </tbody>
             </table>
         </div>
 
-        <div class="analytics-block" style="margin-top:auto;margin-bottom:0">
-            <h3>Environment Parameters</h3>
-            <table class="param-table">
-                <tr><td>Environment</td><td>DocketAI v1.0.0</td></tr>
-                <tr><td>Max Steps (Easy)</td><td>10</td></tr>
-                <tr><td>Max Steps (Medium)</td><td>20</td></tr>
-                <tr><td>Max Steps (Hard)</td><td>30</td></tr>
-                <tr><td>Reward Range</td><td>[0.0, 1.0]</td></tr>
-                <tr><td>Grader Status</td><td style="color:var(--status-routine)">ACTIVE</td></tr>
-            </table>
-        </div>
-    </div>
-
-    <!-- COL 3: LOGS & DIAGNOSTICS -->
-    <div class="col-panel">
-        <h2>Audit Trail & Diagnostics</h2>
-
-        <div class="analytics-block" style="margin-bottom:16px">
-            <h3>Event Log</h3>
-            <div class="log-container" id="log-container">
-                <div class="log-entry"><div class="log-ts">--:--:--</div><div class="log-det">System initialized. Awaiting session.</div></div>
+        <div class="col-panel">
+            <h2>Model Performance & Logistics</h2>
+            <div class="score-box">
+                <div>
+                    <div class="score-desc">Primary Grader Evaluation</div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:4px" id="score-status">Awaiting session initialization</div>
+                </div>
+                <div class="score-num" id="score-main">0.000</div>
+            </div>
+            <div class="analytics-block">
+                <h3>Comparative Baselines</h3>
+                <div class="bar-chart-row"><div class="bar-label">vs Random Agent</div><div class="bar-track"><div class="bar-fill" id="bar-random" style="width:0%;background:var(--status-routine)"></div></div><div class="c-metric" id="pct-random">+0%</div></div>
+                <div class="bar-chart-row"><div class="bar-label">vs FIFO Baseline</div><div class="bar-track"><div class="bar-fill" id="bar-fifo" style="width:0%;background:var(--accent-blue)"></div></div><div class="c-metric" id="pct-fifo">+0%</div></div>
+                <div class="bar-chart-row"><div class="bar-label">Fairness Standard</div><div class="bar-track"><div class="bar-fill" id="bar-fair" style="width:0%;background:var(--status-high)"></div></div><div class="c-metric" id="pct-fair">—</div></div>
+            </div>
+            <div class="analytics-block">
+                <h3>Session Metrics</h3>
+                <table class="param-table">
+                    <tr><td>Current Task</td><td id="p-task">Easy</td></tr>
+                    <tr><td>Day / Step</td><td id="p-day">0</td></tr>
+                    <tr><td>Cases Handled</td><td id="p-handled">0</td></tr>
+                    <tr><td>Avg Urgency Score</td><td id="p-urgency">—</td></tr>
+                    <tr><td>Case Types Covered</td><td id="p-types">—</td></tr>
+                    <tr><td>Pass Threshold</td><td id="p-thresh">≥ 0.30</td></tr>
+                    <tr><td>System Assessment</td><td id="p-assess" style="color:var(--text-muted)">PENDING</td></tr>
+                </table>
+            </div>
+            <div class="analytics-block" style="margin-top:auto;margin-bottom:0">
+                <h3>Environment Parameters</h3>
+                <table class="param-table">
+                    <tr><td>Environment</td><td>DocketAI v1.0.0</td></tr>
+                    <tr><td>Max Steps (Easy)</td><td>10</td></tr>
+                    <tr><td>Max Steps (Medium)</td><td>20</td></tr>
+                    <tr><td>Max Steps (Hard)</td><td>30</td></tr>
+                    <tr><td>Reward Range</td><td>[0.0, 1.0]</td></tr>
+                    <tr><td>Grader Status</td><td style="color:var(--status-routine)">ACTIVE</td></tr>
+                </table>
             </div>
         </div>
 
-        <div class="analytics-block" style="margin-bottom:0;flex-grow:1">
-            <h3>Terminal Output</h3>
-            <div class="diagnostics" id="terminal">
+        <div class="col-panel">
+            <h2>Audit Trail & Diagnostics</h2>
+            <div class="analytics-block" style="margin-bottom:16px">
+                <h3>Event Log</h3>
+                <div class="log-container" id="log-container">
+                    <div class="log-entry"><div class="log-ts">--:--:--</div><div class="log-det">System initialized. Awaiting session.</div></div>
+                </div>
+            </div>
+            <div class="analytics-block" style="margin-bottom:0;flex-grow:1">
+                <h3>Terminal Output</h3>
+                <div class="diagnostics" id="terminal">
 <span class="d-muted"># DocketAI OpenEnv v1.0.0</span>
 <span class="d-muted"># Endpoints: /reset /step /state /health</span>
 <span class="d-muted"># Status: Awaiting initialization...</span>
 <span style="color:#38bdf8">> SYSTEM LISTENING<span class="cursor"></span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW 2: CASELOAD ANALYSIS -->
+<div id="view-caseload" class="nav-view">
+    <div class="view-body">
+        <h2>Caseload Analysis</h2>
+        <div class="view-subtitle">Visual breakdown of case types, urgency distribution, and resolution trends across sessions.</div>
+        <div class="stat-cards">
+            <div class="stat-card" style="border-left:4px solid var(--accent-blue)">
+                <div class="stat-card-label">Total Cases Resolved</div>
+                <div class="stat-card-val" id="ca-resolved">0</div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid #991b1b">
+                <div class="stat-card-label">Critical Cases (Medical + Violence)</div>
+                <div class="stat-card-val" id="ca-critical" style="color:#991b1b">0</div>
+            </div>
+            <div class="stat-card" style="border-left:4px solid #166534">
+                <div class="stat-card-label">Avg Urgency Score</div>
+                <div class="stat-card-val" id="ca-urgency" style="color:#166534">—</div>
+            </div>
+        </div>
+        <div class="white-panel">
+            <h3>Case Type Distribution</h3>
+            <div id="ca-bars"><div style="color:var(--text-muted);font-size:12px;font-style:italic">Start a session and resolve cases to see distribution.</div></div>
+        </div>
+        <div class="white-panel">
+            <h3>Reward Trend (Last 10 Steps)</h3>
+            <div id="ca-reward-bars"><div style="color:var(--text-muted);font-size:12px;font-style:italic">No steps recorded yet.</div></div>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW 3: MODEL GOVERNANCE -->
+<div id="view-governance" class="nav-view">
+    <div class="view-body">
+        <h2>Model Governance</h2>
+        <div class="view-subtitle">Grader configuration, scoring thresholds, and model accountability parameters.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+            <div class="white-panel">
+                <h3>Grader Configuration</h3>
+                <table class="gov-table">
+                    <tr><td>Easy Task Grader</td><td style="color:#166534">graders.grader_easy</td></tr>
+                    <tr><td>Medium Task Grader</td><td style="color:#166534">graders.grader_medium</td></tr>
+                    <tr><td>Hard Task Grader</td><td style="color:#166534">graders.grader_hard</td></tr>
+                    <tr><td>Grader Function</td><td>grade(trajectory)</td></tr>
+                    <tr><td>Grader Status</td><td style="color:#166534">✓ ACTIVE</td></tr>
+                </table>
+            </div>
+            <div class="white-panel">
+                <h3>Pass Thresholds</h3>
+                <table class="gov-table">
+                    <tr><td>Easy Task</td><td>≥ 0.30</td></tr>
+                    <tr><td>Medium Task</td><td>≥ 0.40</td></tr>
+                    <tr><td>Hard Task</td><td>≥ 0.50</td></tr>
+                    <tr><td>Reward Range</td><td>[0.0, 1.0]</td></tr>
+                    <tr><td>Current Score</td><td id="gov-score">—</td></tr>
+                    <tr><td>Assessment</td><td id="gov-assess" style="color:var(--text-muted)">PENDING</td></tr>
+                </table>
+            </div>
+            <div class="white-panel">
+                <h3>LLM Configuration</h3>
+                <table class="gov-table">
+                    <tr><td>Model</td><td>Qwen/Qwen2.5-72B</td></tr>
+                    <tr><td>API Base</td><td>HuggingFace Router</td></tr>
+                    <tr><td>Temperature</td><td>0.0 (deterministic)</td></tr>
+                    <tr><td>Max Tokens</td><td>10</td></tr>
+                    <tr><td>Max Retries</td><td>3</td></tr>
+                    <tr><td>Heuristic Fallback</td><td style="color:#166534">✓ ENABLED</td></tr>
+                </table>
+            </div>
+            <div class="white-panel">
+                <h3>Environment Info</h3>
+                <table class="gov-table">
+                    <tr><td>Environment</td><td>DocketAI v1.0.0</td></tr>
+                    <tr><td>Entry Point</td><td>environment.py</td></tr>
+                    <tr><td>Class</td><td>DocketAIEnv</td></tr>
+                    <tr><td>Max Steps (Easy)</td><td>10</td></tr>
+                    <tr><td>Max Steps (Medium)</td><td>20</td></tr>
+                    <tr><td>Max Steps (Hard)</td><td>30</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW 4: AUDIT TRAIL -->
+<div id="view-audit" class="nav-view">
+    <div class="view-body">
+        <h2>Audit Trail</h2>
+        <div class="view-subtitle">Full session event history — all actions, rewards, and system events.</div>
+        <div class="white-panel" style="padding:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border-light)">
+                <h3 style="margin:0;border:none;padding:0">Event Log</h3>
+                <button class="btn-sm" onclick="clearAudit()">Clear Log</button>
+            </div>
+            <div class="audit-log-full" id="audit-log">
+                <div class="log-entry"><div class="log-ts">--:--:--</div><div class="log-det">Audit trail initialized. Go to Docket Control to begin a session.</div></div>
             </div>
         </div>
     </div>
@@ -315,29 +383,82 @@ function toast(msg, d=2500) {
     el.textContent = msg; el.classList.add('show');
     setTimeout(() => el.classList.remove('show'), d);
 }
-
-function now() { return new Date().toTimeString().slice(0,8); }
+function nowStr() { return new Date().toTimeString().slice(0,8); }
 
 function addLog(msg, cls='log-det') {
+    // Main log
     const c = document.getElementById('log-container');
     const e = document.createElement('div');
     e.className = 'log-entry';
-    e.innerHTML = `<div class="log-ts">${now()}</div><div class="${cls}">${msg}</div>`;
+    e.innerHTML = `<div class="log-ts">${nowStr()}</div><div class="${cls}">${msg}</div>`;
     c.insertBefore(e, c.firstChild);
     if (c.children.length > 30) c.removeChild(c.lastChild);
+    // Audit log mirror
+    const a = document.getElementById('audit-log');
+    const ae = e.cloneNode(true);
+    a.insertBefore(ae, a.firstChild);
+    if (a.children.length > 60) a.removeChild(a.lastChild);
+}
+
+function clearAudit() {
+    document.getElementById('audit-log').innerHTML = '<div class="log-entry"><div class="log-ts">--:--:--</div><div class="log-det">Audit log cleared.</div></div>';
+    toast('Audit log cleared');
 }
 
 function addTerminal(lines) {
     const t = document.getElementById('terminal');
-    lines.forEach(l => {
-        const d = document.createElement('div');
-        d.innerHTML = l;
-        t.insertBefore(d, t.lastChild);
-    });
+    lines.forEach(l => { const d = document.createElement('div'); d.innerHTML = l; t.insertBefore(d, t.lastChild); });
     t.scrollTop = t.scrollHeight;
     while (t.children.length > 25) t.removeChild(t.firstChild);
 }
 
+// ── NAV SWITCHING ─────────────────────────────────────────
+function showNav(view, el) {
+    document.querySelectorAll('.nav-view').forEach(v => v.classList.remove('active-view'));
+    document.querySelectorAll('.header-nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById('view-' + view).classList.add('active-view');
+    el.classList.add('active');
+    if (view === 'caseload') refreshCaseload();
+    if (view === 'governance') {
+        const assess = document.getElementById('p-assess');
+        document.getElementById('gov-assess').textContent = assess.textContent;
+        document.getElementById('gov-assess').style.color = assess.style.color;
+        const score = document.getElementById('kpi-score').textContent;
+        document.getElementById('gov-score').textContent = score;
+    }
+}
+
+function refreshCaseload() {
+    document.getElementById('ca-resolved').textContent = S.handled.length || '0';
+    const critical = S.handled.filter(c => ['medical','violence'].includes(c.case_type)).length;
+    document.getElementById('ca-critical').textContent = critical;
+    if (S.handled.length > 0) {
+        const avg = S.handled.reduce((a,c) => a + c.urgency_score, 0) / S.handled.length;
+        document.getElementById('ca-urgency').textContent = avg.toFixed(2);
+        const types = ['medical','violence','bail','criminal','civil'];
+        const counts = {}; types.forEach(t => counts[t] = S.handled.filter(c => c.case_type === t).length);
+        const max = Math.max(...Object.values(counts), 1);
+        document.getElementById('ca-bars').innerHTML = types.map(t => `
+            <div class="bar-chart-row">
+                <div class="bar-label" style="font-size:12px">${t.charAt(0).toUpperCase()+t.slice(1)}</div>
+                <div class="bar-track"><div class="bar-fill" style="width:${counts[t]/max*100}%;background:${getColor(t)}"></div></div>
+                <div class="c-metric">${counts[t]} cases</div>
+            </div>`).join('');
+        const last10 = S.rewards.slice(-10);
+        const maxR = Math.max(...last10, 0.01);
+        document.getElementById('ca-reward-bars').innerHTML = last10.length ? last10.map((r,i) => `
+            <div class="bar-chart-row">
+                <div class="bar-label" style="font-size:12px">Step ${S.rewards.length-last10.length+i+1}</div>
+                <div class="bar-track"><div class="bar-fill" style="width:${r/maxR*100}%;background:${r>=0.6?'#166534':r>=0.3?'#b45309':'#991b1b'}"></div></div>
+                <div class="c-metric">${r.toFixed(3)}</div>
+            </div>`).join('') : '<div style="color:var(--text-muted);font-size:12px;font-style:italic">No steps yet.</div>';
+    } else {
+        document.getElementById('ca-bars').innerHTML = '<div style="color:var(--text-muted);font-size:12px;font-style:italic">Start a session and resolve cases to see distribution.</div>';
+        document.getElementById('ca-reward-bars').innerHTML = '<div style="color:var(--text-muted);font-size:12px;font-style:italic">No steps recorded yet.</div>';
+    }
+}
+
+// ── TASK & KPI ────────────────────────────────────────────
 function setTask(task, btn) {
     S.task = task;
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -346,10 +467,9 @@ function setTask(task, btn) {
     document.getElementById('p-thresh').textContent = '≥ ' + THRESH[task].toFixed(2);
     toast('Task set to: ' + task.toUpperCase());
 }
-
-function getIndicator(type) { return (TC[type] || TC.civil).ind; }
-function getColor(type) { return (TC[type] || TC.civil).color; }
-function getLabel(type) { return (TC[type] || TC.civil).label; }
+function getColor(type) { return (TC[type]||TC.civil).color; }
+function getIndicator(type) { return (TC[type]||TC.civil).ind; }
+function getLabel(type) { return (TC[type]||TC.civil).label; }
 
 function updateKPIs() {
     document.getElementById('kpi-pending').textContent = S.cases.length || '—';
@@ -358,22 +478,21 @@ function updateKPIs() {
     document.getElementById('p-day').textContent = S.day;
     document.getElementById('p-handled').textContent = S.handled.length;
     document.getElementById('footer-session').textContent = `Session: Day ${S.day} · ${S.task.toUpperCase()}`;
-
     if (S.handled.length > 0) {
         const avgU = S.handled.reduce((a,c) => a+c.urgency_score, 0) / S.handled.length;
         document.getElementById('p-urgency').textContent = avgU.toFixed(2);
         const types = new Set(S.handled.map(c => c.case_type));
         document.getElementById('p-types').textContent = types.size + '/5';
-        const fairness = (types.size / 5).toFixed(2);
+        const fairness = (types.size/5).toFixed(2);
         document.getElementById('kpi-fairness').textContent = fairness;
-        document.getElementById('bar-fair').style.width = (types.size / 5 * 100) + '%';
+        document.getElementById('bar-fair').style.width = (types.size/5*100)+'%';
         document.getElementById('pct-fair').textContent = fairness;
     }
 }
 
 function updateScore() {
     if (!S.rewards.length) return;
-    const avg = S.rewards.reduce((a,b)=>a+b,0) / S.rewards.length;
+    const avg = S.rewards.reduce((a,b)=>a+b,0)/S.rewards.length;
     document.getElementById('kpi-score').textContent = avg.toFixed(3);
     document.getElementById('score-main').textContent = avg.toFixed(3);
     const threshold = THRESH[S.task];
@@ -389,38 +508,29 @@ function updateScore() {
         statusEl.textContent = `Score ${avg.toFixed(3)} < threshold ${threshold.toFixed(2)} — NEEDS IMPROVEMENT`;
         statusEl.style.color = '#991b1b';
     }
-    // Baseline comparison (FIFO ~0.45, Random ~0.35)
-    const vsRandom = Math.max(0, ((avg - 0.35) / 0.35) * 100);
-    const vsFifo = Math.max(0, ((avg - 0.45) / 0.45) * 100);
-    document.getElementById('bar-random').style.width = Math.min(avg / 0.9 * 100, 100) + '%';
-    document.getElementById('bar-fifo').style.width = Math.min(avg / 0.75 * 100, 100) + '%';
-    document.getElementById('pct-random').textContent = '+' + vsRandom.toFixed(0) + '%';
-    document.getElementById('pct-fifo').textContent = '+' + vsFifo.toFixed(0) + '%';
+    document.getElementById('bar-random').style.width = Math.min(avg/0.9*100,100)+'%';
+    document.getElementById('bar-fifo').style.width = Math.min(avg/0.75*100,100)+'%';
+    document.getElementById('pct-random').textContent = '+'+Math.max(0,((avg-0.35)/0.35*100)).toFixed(0)+'%';
+    document.getElementById('pct-fifo').textContent = '+'+Math.max(0,((avg-0.45)/0.45*100)).toFixed(0)+'%';
 }
 
 function renderCases() {
     const tbody = document.getElementById('case-tbody');
-    if (!S.cases.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="6">All cases resolved</td></tr>';
-        return;
-    }
+    if (!S.cases.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="6">All cases resolved</td></tr>'; return; }
     const sorted = [...S.cases].sort((a,b) => b.urgency_score - a.urgency_score);
     tbody.innerHTML = '';
     sorted.forEach((c, di) => {
         const origIdx = S.cases.findIndex(x => x.case_id === c.case_id);
         const color = getColor(c.case_type);
-        const ind = getIndicator(c.case_type);
-        const label = getLabel(c.case_type);
         const tr = document.createElement('tr');
-        tr.style.animationDelay = (di * 0.04) + 's';
+        tr.style.animationDelay = (di*0.04)+'s';
         tr.innerHTML = `
             <td><span class="c-id">CASE-${String(c.case_id).padStart(4,'0')}</span></td>
-            <td><span class="indicator ${ind}"></span><span class="c-type">${label}</span></td>
+            <td><span class="indicator ${getIndicator(c.case_type)}"></span><span class="c-type">${getLabel(c.case_type)}</span></td>
             <td><span class="c-metric">${c.age_days} d</span></td>
             <td><span class="c-metric" style="color:${color};font-weight:600">${c.severity.toFixed(2)}</span></td>
             <td><span class="c-metric" style="color:${color}">${c.urgency_score.toFixed(2)}</span></td>
-            <td><button class="btn-sm primary" style="background:${color};border-color:${color}" onclick="stepCase(${origIdx})">Review</button></td>
-        `;
+            <td><button class="btn-sm primary" style="background:${color};border-color:${color}" onclick="stepCase(${origIdx})">Review</button></td>`;
         tbody.appendChild(tr);
     });
     updateKPIs();
@@ -429,18 +539,16 @@ function renderCases() {
 function addResolved(c, reward) {
     const tbody = document.getElementById('resolved-tbody');
     if (tbody.querySelector('.empty-row')) tbody.innerHTML = '';
-    const color = getColor(c.case_type);
     const tr = document.createElement('tr');
-    tr.style.animationDelay = '0s';
     tr.innerHTML = `
         <td><span class="c-id">CASE-${String(c.case_id).padStart(4,'0')}</span></td>
         <td><span class="indicator ${getIndicator(c.case_type)}"></span>${c.case_type}</td>
         <td><span class="c-metric">${c.age_days} d</span></td>
-        <td><span class="c-metric" style="color:#166534;font-weight:600">+${reward.toFixed(2)}</span></td>
-    `;
+        <td><span class="c-metric" style="color:#166534;font-weight:600">+${reward.toFixed(2)}</span></td>`;
     tbody.insertBefore(tr, tbody.firstChild);
 }
 
+// ── API ───────────────────────────────────────────────────
 async function resetEnv() {
     S.auto = false;
     document.getElementById('auto-btn').textContent = '⚡ Auto Play';
@@ -449,8 +557,7 @@ async function resetEnv() {
         addTerminal([`<span class="d-muted">> </span><span class="d-method">POST</span> <span class="d-path">/reset</span>`]);
         const res = await fetch('/reset', { method: 'POST' });
         const data = await res.json();
-        S.cases = data.cases; S.handled = []; S.day = data.day;
-        S.rewards = []; S.totalReward = 0;
+        S.cases = data.cases; S.handled = []; S.day = data.day; S.rewards = []; S.totalReward = 0;
         document.getElementById('resolved-tbody').innerHTML = '<tr class="empty-row"><td colspan="4">No cases resolved yet</td></tr>';
         document.getElementById('score-main').textContent = '0.000';
         document.getElementById('kpi-score').textContent = '0.000';
@@ -460,12 +567,9 @@ async function resetEnv() {
         document.getElementById('score-status').style.color = 'var(--text-muted)';
         renderCases(); updateKPIs();
         addTerminal([`<span class="d-response">{"status":"ok","cases":${data.cases.length},"day":${data.day}}</span>`]);
-        addLog(`[START] Session initialized — ${data.cases.length} cases loaded`, 'log-ok');
+        addLog(`[START] Session initialized — ${data.cases.length} cases loaded · Task: ${S.task.toUpperCase()}`, 'log-ok');
         toast('Session initialized — ' + data.cases.length + ' cases loaded');
-    } catch(e) {
-        addLog('[ERROR] Cannot connect to server', 'log-err');
-        toast('Connection error');
-    }
+    } catch(e) { addLog('[ERROR] Cannot connect to server', 'log-err'); toast('Connection error'); }
 }
 
 async function stepCase(idx) {
@@ -475,18 +579,16 @@ async function stepCase(idx) {
         const res = await fetch('/step', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({case_index: idx}) });
         const data = await res.json();
         const handled = S.cases[idx];
-        S.cases = data.observation.cases;
-        S.day = data.observation.day;
-        S.rewards.push(data.reward);
-        S.totalReward += data.reward;
+        S.cases = data.observation.cases; S.day = data.observation.day;
+        S.rewards.push(data.reward); S.totalReward += data.reward;
         if (handled) { S.handled.unshift(handled); addResolved(handled, data.reward); }
         updateScore(); renderCases(); updateKPIs();
         addTerminal([`<span class="d-response">{"reward":${data.reward.toFixed(2)},"done":${data.done},"day":${data.observation.day}}</span>`]);
-        addLog(`Action Executed: ${handled?.case_type?.toUpperCase()} CASE-${String(handled?.case_id).padStart(4,'0')} dispatched (Reward: +${data.reward.toFixed(2)})`, data.reward > 0.6 ? 'log-ok' : 'log-det');
+        addLog(`Action: ${handled?.case_type?.toUpperCase()} CASE-${String(handled?.case_id).padStart(4,'0')} dispatched · Reward: +${data.reward.toFixed(2)}`, data.reward > 0.6 ? 'log-ok' : 'log-det');
         if (data.done) {
-            const avg = S.rewards.reduce((a,b)=>a+b,0) / S.rewards.length;
-            addLog(`[END] Session complete — Final Score: ${avg.toFixed(3)}`, 'log-ok');
-            toast('Session complete! Final score: ' + (avg*100).toFixed(1) + '%', 3500);
+            const avg = S.rewards.reduce((a,b)=>a+b,0)/S.rewards.length;
+            addLog(`[END] Session complete · Score: ${avg.toFixed(3)} · ${avg>=THRESH[S.task]?'PASSED ✓':'BELOW THRESHOLD'}`, 'log-ok');
+            toast('Session complete! Score: '+(avg*100).toFixed(1)+'%', 3500);
             S.auto = false;
             document.getElementById('auto-btn').textContent = '⚡ Auto Play';
             document.getElementById('auto-btn').className = 'btn-sm';
@@ -503,16 +605,8 @@ function stepBest() {
 function toggleAuto() {
     S.auto = !S.auto;
     const btn = document.getElementById('auto-btn');
-    if (S.auto) {
-        btn.textContent = '⏹ Suspend Auto';
-        btn.className = 'btn-sm active-auto';
-        toast('Auto-prioritizing cases...');
-        runAuto();
-    } else {
-        btn.textContent = '⚡ Auto Play';
-        btn.className = 'btn-sm';
-        toast('Auto play suspended');
-    }
+    if (S.auto) { btn.textContent = '⏹ Suspend Auto'; btn.className = 'btn-sm active-auto'; toast('Auto-prioritizing...'); runAuto(); }
+    else { btn.textContent = '⚡ Auto Play'; btn.className = 'btn-sm'; toast('Auto play suspended'); }
 }
 
 async function runAuto() {
@@ -522,11 +616,7 @@ async function runAuto() {
         const best = S.cases.reduce((bi,c,i) => c.urgency_score > S.cases[bi].urgency_score ? i : bi, 0);
         await stepCase(best);
     }
-    if (!S.cases.length) {
-        S.auto = false;
-        document.getElementById('auto-btn').textContent = '⚡ Auto Play';
-        document.getElementById('auto-btn').className = 'btn-sm';
-    }
+    if (!S.cases.length) { S.auto = false; document.getElementById('auto-btn').textContent = '⚡ Auto Play'; document.getElementById('auto-btn').className = 'btn-sm'; }
 }
 </script>
 </body>
