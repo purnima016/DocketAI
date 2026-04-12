@@ -40,17 +40,22 @@ tasks:
     description: 10 cases with clearly different urgency levels
     difficulty: easy
     max_steps: 10
-    grader: graders.grader_easy
+    grader: graders/grader_easy.py
+    grader_fn: grade
+
   - name: medium
     description: 25 cases with overlapping urgency and escalation
     difficulty: medium
     max_steps: 20
-    grader: graders.grader_medium
+    grader: graders/grader_medium.py
+    grader_fn: grade
+
   - name: hard
     description: 50 cases with limited slots and complex prioritization
     difficulty: hard
     max_steps: 30
-    grader: graders.grader_hard
+    grader: graders/grader_hard.py
+    grader_fn: grade
 reward:
   range: [0.0, 1.0]
   description: >
