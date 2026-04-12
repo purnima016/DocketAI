@@ -4,7 +4,6 @@ description: >
   An intelligent court case prioritization environment where an AI agent
   learns to dynamically sequence case handling decisions based on urgency,
   severity, and fairness to reduce judicial backlog and deliver timely justice.
-
 author: Purni
 tags:
   - openenv
@@ -12,11 +11,9 @@ tags:
   - justice
   - prioritization
   - decision-making
-
 environment:
   entry_point: environment.py
   class: DocketAIEnv
-
 observation_space:
   type: object
   fields:
@@ -32,39 +29,33 @@ observation_space:
     handled_so_far:
       type: integer
       description: Number of cases handled
-
 action_space:
   type: object
   fields:
     case_index:
       type: integer
       description: Index of case to handle next (0-based)
-
 tasks:
   - name: easy
     description: 10 cases with clearly different urgency levels
     difficulty: easy
     max_steps: 10
-    grader: graders/grader_easy.py
-
+    grader: graders.grader_easy
   - name: medium
     description: 25 cases with overlapping urgency and escalation
     difficulty: medium
     max_steps: 20
-    grader: graders/grader_medium.py
-
+    grader: graders.grader_medium
   - name: hard
     description: 50 cases with limited slots and complex prioritization
     difficulty: hard
     max_steps: 30
-    grader: graders/grader_hard.py
-
+    grader: graders.grader_hard
 reward:
   range: [0.0, 1.0]
   description: >
     Step reward based on urgency score of handled case.
     Final score weighted across urgency, fairness, backlog reduction.
-
 baseline:
   script: inference.py
   runtime_limit_minutes: 20
