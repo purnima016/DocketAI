@@ -1,179 +1,129 @@
 import os
-import json
 import textwrap
 from typing import List, Optional
 from openai import OpenAI
 from environment import DocketAIEnv, Action
 
-# ─── Configuration ─────────────────────────────────────────
 API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY")
 API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
 MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
-TASK_NAME = os.getenv("DOCKETAI_TASK", "easy")
 BENCHMARK = "docketai"
-MAX_STEPS = 30
 TEMPERATURE = 0.3
 MAX_TOKENS = 200
 SUCCESS_SCORE_THRESHOLD = 0.3
 
-
-# ─── Logging ───────────────────────────────────────────────
-def log_start(task: str, env: str, model: str) -> None:
-    print(f"[START] task={task} env={env} model={model}", flush=True)
-
-
-def log_step(step: int, action: str, reward: float, done: bool, error: Optional[str]) -> None:
-    error_val = error if error else "null"
-    done_val = str(done).lower()
-    print(
-        f"[STEP] step={step} action={action} reward={reward:.2f} done={done_val} error={error_val}",
-        flush=True,
-    )
-
-
-def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
-    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
-    print(
-        f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
-        flush=True,
-    )
-
-
-# ─── Prompt Builder ────────────────────────────────────────
 SYSTEM_PROMPT = textwrap.dedent("""
     You are an intelligent court case prioritization agent.
     You will be given a list of pending court cases with their details.
     Your job is to select the index of the most urgent case to handle next.
-    
-    Consider these factors in order of importance:
-    1. Case type: medical > violence > bail > criminal > civil
-    2. Severity score (higher = more urgent)
-    3. Age of case (older = more urgent)
-    4. People affected (more = more urgent)
-    
-    Reply with ONLY a single integer (the case index, 0-based).
-    No explanation. No text. Just the number.
+    Consider: medical > violence > bail > criminal > civil
+    Reply with ONLY a single integer (0-based index). No explanation.
 """).strip()
 
+TASKS = [
+    {"name": "easy",   "num_cases": 10, "max_steps": 10, "threshold": 0.3},
+    {"name": "medium", "num_cases": 25, "max_steps": 20, "threshold": 0.4},
+    {"name": "hard",   "num_cases": 50, "max_steps": 30, "threshold": 0.5},
+]
 
-def build_user_prompt(observation) -> str:
+
+def log_start(task, env, model):
+    print(f"[START] task={task} env={env} model={model}", flush=True)
+
+
+def log_step(step, action, reward, done, error):
+    error_val = error if error else "null"
+    print(f"[STEP] step={step} action={action} reward={reward:.2f} done={str(done).lower()} error={error_val}", flush=True)
+
+
+def log_end(success, steps, score, rewards):
+    rewards_str = ",".join(f"{r:.2f}" for r in rewards)
+    print(f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}", flush=True)
+
+
+def build_prompt(observation):
     cases_text = ""
     for i, case in enumerate(observation.cases):
         cases_text += (
             f"Index {i}: type={case.case_type} "
             f"age={case.age_days}days "
             f"severity={case.severity} "
-            f"people={case.people_affected} "
             f"urgency={case.urgency_score}\n"
         )
     return f"Day {observation.day} — Pending Cases:\n{cases_text}\nWhich index to handle next?"
 
 
-# ─── Agent Decision ────────────────────────────────────────
-def get_agent_action(client: OpenAI, observation, fallback_index: int = 0) -> int:
-    user_prompt = build_user_prompt(observation)
+def get_action(client, observation, fallback=0):
     try:
         completion = client.chat.completions.create(
             model=MODEL_NAME,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": user_prompt},
+                {"role": "user", "content": build_prompt(observation)},
             ],
             temperature=TEMPERATURE,
             max_tokens=MAX_TOKENS,
-            stream=False,
         )
-        text = (completion.choices[0].message.content or "").strip()
-        index = int(text)
-        if 0 <= index < len(observation.cases):
-            return index
-        return fallback_index
+        idx = int((completion.choices[0].message.content or "").strip())
+        return idx if 0 <= idx < len(observation.cases) else fallback
     except Exception as exc:
-        print(f"[DEBUG] Model request failed: {exc}", flush=True)
-        return fallback_index
+        print(f"[DEBUG] Model error: {exc}", flush=True)
+        return fallback
 
 
-# ─── Task Setup ────────────────────────────────────────────
-def get_env_for_task(task_name: str) -> DocketAIEnv:
-    if task_name == "easy":
-        return DocketAIEnv(num_cases=10, max_steps=10)
-    elif task_name == "medium":
-        return DocketAIEnv(num_cases=25, max_steps=20)
-    elif task_name == "hard":
-        return DocketAIEnv(num_cases=50, max_steps=30)
-    else:
-        return DocketAIEnv(num_cases=10, max_steps=10)
+def grade(trajectory, threshold=0.3):
+    if not trajectory:
+        return 0.0, False
+    rewards = [s.get("reward", 0.0) for s in trajectory]
+    score = round(min(sum(rewards) / len(rewards), 1.0), 4)
+    return score, score >= threshold
 
 
-def get_grader_for_task(task_name: str):
-    if task_name == "easy":
-        from graders.grader_easy import run_grader
-    elif task_name == "medium":
-        from graders.grader_medium import run_grader
-    elif task_name == "hard":
-        from graders.grader_hard import run_grader
-    else:
-        from graders.grader_easy import run_grader
-    return run_grader
+def run_task(client, task_cfg):
+    task_name = task_cfg["name"]
+    max_steps = task_cfg["max_steps"]
+    threshold = task_cfg["threshold"]
 
-
-# ─── Main ──────────────────────────────────────────────────
-def main() -> None:
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
-    env = get_env_for_task(TASK_NAME)
-    run_grader = get_grader_for_task(TASK_NAME)
-
+    env = DocketAIEnv(num_cases=task_cfg["num_cases"], max_steps=max_steps)
     rewards: List[float] = []
+    trajectory = []
     steps_taken = 0
-    score = 0.0
-    success = False
 
-    log_start(task=TASK_NAME, env=BENCHMARK, model=MODEL_NAME)
+    log_start(task=task_name, env=BENCHMARK, model=MODEL_NAME)
 
     try:
         observation = env.reset()
-
-        for step in range(1, MAX_STEPS + 1):
+        for step in range(1, max_steps + 1):
             if not observation.cases:
                 break
-
-            case_index = get_agent_action(client, observation, fallback_index=0)
+            case_index = get_action(client, observation, fallback=0)
             action = Action(case_index=case_index)
             result = env.step(action)
 
             reward = result.reward
             done = result.done
-            error = None
-
             rewards.append(reward)
+            trajectory.append({"step": step, "action": f"handle_case({case_index})", "reward": reward, "done": done})
             steps_taken = step
             observation = result.observation
 
-            log_step(
-                step=step,
-                action=f"handle_case({case_index})",
-                reward=reward,
-                done=done,
-                error=error
-            )
-
+            log_step(step=step, action=f"handle_case({case_index})", reward=reward, done=done, error=None)
             if done:
                 break
 
-        grader_result = run_grader(env.handled)
-        score = grader_result["score"]
-        success = score >= SUCCESS_SCORE_THRESHOLD
+        score, success = grade(trajectory, threshold)
 
     except Exception as e:
-        print(f"[DEBUG] Error during episode: {e}", flush=True)
+        print(f"[DEBUG] Error in task {task_name}: {e}", flush=True)
+        score, success = 0.0, False
 
-    finally:
-        log_end(
-            success=success,
-            steps=steps_taken,
-            score=score,
-            rewards=rewards
-        )
+    log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
+
+
+def main():
+    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
+    for task_cfg in TASKS:
+        run_task(client, task_cfg)
 
 
 if __name__ == "__main__":
